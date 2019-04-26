@@ -23,30 +23,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(IOSVersion);
 	if(nil != (self = [super init]))
 	{
 #if __CC_PLATFORM_IOS
-		NSString* versionStr = [[UIDevice currentDevice] systemVersion];
-		unichar ch = [versionStr characterAtIndex:0];
-		if(ch < '0' || ch > '9' || [versionStr characterAtIndex:1] != '.')
-		{
-			NSLog(@"Error: %s: Cannot parse iOS version string \"%@\"", __PRETTY_FUNCTION__, versionStr);
-		}
-		
-		version = (float)(ch - '0');
-		
-		float multiplier = 0.1f;
-		NSUInteger vLength = [versionStr length];
-		for(NSUInteger i = 2; i < vLength; i++)
-		{
-			ch = [versionStr characterAtIndex:i];
-			if(ch >= '0' && ch <= '9')
-			{
-				version += (ch - '0') * multiplier;
-				multiplier /= 10;
-			}
-			else if('.' != ch)
-			{
-				break;
-			}
-		}
+		// Only really any good for the major version as 4.10.3 would show as 4.1 which is less than what 4.2.2 (4.2) would return.
+		version = [[[UIDevice currentDevice] systemVersion] floatValue];
 #else
         version = 5;
 #endif
